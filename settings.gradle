@@ -1,0 +1,3 @@
+rootProject.name = 'fortune-telling'
+
+include 'api', 'core', 'domain', 'infra'
