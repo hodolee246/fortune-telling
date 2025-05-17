@@ -1,7 +1,6 @@
 package com.hodolee.example.api.fortune.api;
 
 import com.hodolee.example.api.fortune.dto.FortuneRequest;
-import com.hodolee.example.api.fortune.response.FortuneResponse;
 import com.hodolee.example.core.fortune.service.FortuneService;
 import com.hodolee.example.core.fortune.service.dto.FortuneResponse;
 import org.springframework.http.ResponseEntity;

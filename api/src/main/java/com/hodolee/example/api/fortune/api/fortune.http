@@ -1,0 +1,8 @@
+### 운세 조회 요청 (POST)
+POST http://localhost:8080/api/fortune
+Content-Type: application/json
+
+{
+  "name": "홍길동",
+  "birthDate": "19950101"
+}
