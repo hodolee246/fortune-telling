@@ -2,6 +2,7 @@ package com.hodolee.example.infra.fortune.external;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,18 +15,22 @@ public class NaverFortuneClient {
     private String apiUri;
 
     public String getFortune(String birthDate) {
+        String query = birthDate + " 운세";
+        String requestUrl = apiUri + query;
+
         try {
-            String query = birthDate + " 운세";
-            String url = apiUri + query;
-            Document doc = Jsoup.connect(url)
+            Document document = Jsoup.connect(requestUrl)
                     .userAgent("Mozilla/5.0")
                     .get();
-            // TODO 구조 맞게 잘라야함
-            String fortune = doc.selectFirst(".detail").text();
+            Element fortuneElement = document.selectFirst("div.source_dsc");
 
-            return fortune;
+            if (fortuneElement == null) {
+                throw new RuntimeException("크롤링한 정보를 찾을 수 없습니다.");
+            }
+
+            return fortuneElement.text();
         } catch (IOException e) {
-            throw new RuntimeException("naver api error");
+            throw new RuntimeException("네이버 운세 크롤링에 실패하였습니다.");
         }
     }
 

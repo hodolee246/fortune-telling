@@ -1,0 +1,3 @@
+naver:
+  fortune:
+    apiUri: https://search.naver.com/search.naver?query=
