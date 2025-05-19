@@ -17,6 +17,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'org.hashids:hashids:1.0.3'
 }
 
 tasks.named('test') {

@@ -1,6 +1,6 @@
-package com.hodolee.example.domain.fortune;
+package com.hodolee.example.domain.fortune.dto;
 
-public record UserInfo(
+public record UserInfoDto(
         String name,        // 이름
         String birthDate,   // 생년월일
         String gender       // 성별
