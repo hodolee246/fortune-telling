@@ -27,13 +27,13 @@ public class FortuneService {
     public FortuneResponse getFortune(String name, String birthDate) {
         // 네이버 운세 크롤링 반환
         String fortuneText = naverFortuneClient.getFortune(birthDate);
-        fortuneRepository.save(Fortune.builder()
-                .name(name)
-                .birthDate(birthDate)
-                .fortuneText(fortuneText)
-                .build());
+//        fortuneRepository.save(Fortune.builder()
+//                .name(name)
+//                .birthDate(birthDate)
+//                .fortuneText(fortuneText)
+//                .build());
         // url
-        String generatedFortuneUrl = urlGenerator.generateEncodeUrl(fortuneText);
+        String generatedFortuneUrl = urlGenerator.generateEncodeUrl(1L);
 
         return new FortuneResponse(name, birthDate, generatedFortuneUrl);
     }
