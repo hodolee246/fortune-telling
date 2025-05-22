@@ -15,11 +15,11 @@ public class UrlGenerator {
     public String generateEncodeUrl(Long id) {
         String hashedId = hashids.encode(id);
 
-        return String.format("http://localhost:8080/%s", hashedId);
+        return String.format("http://localhost:8080/api/fortune/%s", hashedId);
     }
 
-    public String getDecodedUrl(String encodedUrl) {
-        return hashids.decodeHex(encodedUrl);
+    public Long getDecodedUrl(String encodedUrl) {
+        return Long.parseLong(hashids.decodeHex(encodedUrl));
     }
 
 }

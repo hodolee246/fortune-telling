@@ -4,10 +4,9 @@ import com.hodolee.example.api.fortune.dto.FortuneRequest;
 import com.hodolee.example.core.fortune.service.FortuneService;
 import com.hodolee.example.core.fortune.service.dto.FortuneResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/fortune")
@@ -20,8 +19,14 @@ public class FortuneController {
     }
 
     @PostMapping
-    public ResponseEntity<FortuneResponse> getFortune(@RequestBody FortuneRequest request) {
-        return ResponseEntity.ok().body(fortuneService.getFortune(request.name(), request.birthDate()));
+    public ResponseEntity<?> getFortuneUrl(@RequestBody FortuneRequest request) {
+        String fortuneUrl = fortuneService.getFortuneUrl(request.name(), request.birthDate());
+        return ResponseEntity.created(URI.create(fortuneUrl)).build();
+    }
+
+    @GetMapping("{encryptIdx}")
+    public ResponseEntity<?> getFortune(@PathVariable("encryptIdx") String encryptIdx) {
+        return ResponseEntity.ok(fortuneService.getFortune(encryptIdx));
     }
 
 }
