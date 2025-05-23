@@ -61,6 +61,8 @@ public class FortuneService {
         // 저장된 운세 조회
         Fortune getFortune = fortuneRepository.findById(decodeIdx)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 운세 URL 입니다."));
+        // 운세 조회 횟수 상승
+        getFortune.incrementViewCount();
 
         return new FortuneResponse(getFortune.getName(), getFortune.getBirthDate(), getFortune.getFortuneText());
     }

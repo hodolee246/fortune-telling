@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,13 +23,20 @@ public class Fortune {
     private String name;
     private String birthDate;
     private String fortuneText;
+    private int viewCount = 0;
+    private LocalDateTime lastViewedAt;
+
+    public void incrementViewCount() {
+        viewCount++;
+        lastViewedAt = LocalDateTime.now();
+    }
 
     @Builder
-    public Fortune(Long idx, String name, String birthDate, String fortuneText) {
+    public Fortune(Long idx, String name, String birthDate, String fortuneText, int viewCount) {
         this.idx = idx;
         this.name = name;
         this.birthDate = birthDate;
         this.fortuneText = fortuneText;
+        this.viewCount = viewCount;
     }
-
 }
