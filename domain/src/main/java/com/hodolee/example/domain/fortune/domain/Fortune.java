@@ -26,17 +26,17 @@ public class Fortune {
     private int viewCount = 0;
     private LocalDateTime lastViewedAt;
 
+    @Builder
+    public Fortune(Long idx, String name, String birthDate, String fortuneText) {
+        this.idx = idx;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.fortuneText = fortuneText;
+    }
+
     public void incrementViewCount() {
         viewCount++;
         lastViewedAt = LocalDateTime.now();
     }
 
-    @Builder
-    public Fortune(Long idx, String name, String birthDate, String fortuneText, int viewCount) {
-        this.idx = idx;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.fortuneText = fortuneText;
-        this.viewCount = viewCount;
-    }
 }
