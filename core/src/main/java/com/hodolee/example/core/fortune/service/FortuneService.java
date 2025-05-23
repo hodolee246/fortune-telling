@@ -51,10 +51,15 @@ public class FortuneService {
                     .fortuneText(fortuneText)
                     .build());
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new IllegalArgumentException("락 획득 중 예외 발생 : " + e.getMessage());
         } finally {
             if (acquired && lock.isHeldByCurrentThread()) {
-                lock.unlock();
+                try {
+                    lock.unlock();
+                } catch (Exception e) {
+                    log.error("락 해제 실패 : {}", e.getMessage());
+                }
             }
         }
     }
@@ -83,10 +88,15 @@ public class FortuneService {
                     .fortuneText(defaultFortune)
                     .build());
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new IllegalArgumentException("락 획득 중 예외 발생 : " + e.getMessage());
         } finally {
             if (acquired && lock.isHeldByCurrentThread()) {
-                lock.unlock();
+                try {
+                    lock.unlock();
+                } catch (Exception e) {
+                    log.error("락 해제 실패 : {}", e.getMessage());
+                }
             }
         }
     }
