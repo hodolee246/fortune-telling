@@ -1,4 +1,4 @@
-### 운세 조회 요청 (POST)
+### 운세 생성 요청 (POST)
 POST http://localhost:8080/api/fortune
 Content-Type: application/json
 
@@ -6,3 +6,6 @@ Content-Type: application/json
   "name": "홍길동",
   "birthDate": "19950101"
 }
+
+### 운세 조회
+GET http://localhost:8080/api/fortune/3JNK3Nn

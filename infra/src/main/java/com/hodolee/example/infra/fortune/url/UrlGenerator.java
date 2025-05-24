@@ -19,7 +19,13 @@ public class UrlGenerator {
     }
 
     public Long getDecodedUrl(String encodedUrl) {
-        return Long.parseLong(hashids.decodeHex(encodedUrl));
+        long[] decoded = hashids.decode(encodedUrl);
+
+        if (decoded.length == 0) {
+            throw new IllegalArgumentException("유효하지 않은 URL 입니다.");
+        }
+
+        return decoded[0];
     }
 
 }
