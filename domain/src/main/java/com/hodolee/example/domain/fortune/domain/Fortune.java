@@ -23,7 +23,7 @@ public class Fortune {
     private String name;
     private String birthDate;
     private String fortuneText;
-    private int viewCount = 0;
+    private Long viewCount = 0L;
     private LocalDateTime lastViewedAt;
 
     @Builder
@@ -35,8 +35,12 @@ public class Fortune {
     }
 
     public void incrementViewCount() {
-        viewCount++;
-        lastViewedAt = LocalDateTime.now();
+        this.viewCount++;
+        this.lastViewedAt = LocalDateTime.now();
     }
 
+    public void addViewCount(Long count) {
+        this.viewCount += count;
+        this.lastViewedAt = LocalDateTime.now();
+    }
 }

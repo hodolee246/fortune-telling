@@ -29,6 +29,7 @@ public class FortuneService {
     private final FortuneRepository fortuneRepository;
     private final RedissonClient redissonClient;
     private final RedisTemplate<String, RedisFortuneResponse> redisTemplate;
+    private final RedisTemplate<String, Long> viewCountRedisTemplate;
 
     @CircuitBreaker(name = "fortuneService", fallbackMethod = "getDefaultFortuneUrl")
     @Transactional
@@ -106,16 +107,19 @@ public class FortuneService {
     }
 
     public FortuneResponse getFortune(String encryptIdx) {
+        Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
         // redis 캐시
-        String redisKey = "fortune:result:" + encryptIdx;
+        String redisKey = "fortune:result:" + decodeIdx;
+        String viewCountKey = "view_count:" + decodeIdx;
         RedisFortuneResponse cached = redisTemplate.opsForValue().get(redisKey);
 
         // 캐시 존재 시 캐시 반환
         if (cached != null) {
+            // redis 조회 수 증가 (write-back)
+            viewCountRedisTemplate.opsForValue().increment(viewCountKey);
             return new FortuneResponse(cached.name(), cached.birthDate(), cached.fortuneText());
         }
 
-        Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
         // 저장된 운세 조회
         Fortune getFortune = fortuneRepository.findById(decodeIdx)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 운세 URL 입니다."));
