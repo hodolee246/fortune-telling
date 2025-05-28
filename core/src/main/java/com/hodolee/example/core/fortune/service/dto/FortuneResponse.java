@@ -1,8 +1,8 @@
 package com.hodolee.example.core.fortune.service.dto;
 
 public record FortuneResponse(
-        String name,
-        String birthDate,
-        String fortuneText
+        String name,        // 이름
+        String birthDate,   // 생년월일
+        String fortuneText  // 운세 크롤링 텍스트
 ) {
 }

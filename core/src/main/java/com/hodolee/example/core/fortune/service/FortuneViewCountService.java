@@ -16,19 +16,22 @@ import java.util.Set;
 @Slf4j
 public class FortuneViewCountService {
 
+    private static final String REDIS_VIEW_COUNT_PATTERN = "view_count:*" ;
+    private static final String REDIS_VIEW_COUNT_TARGET = "view_count:" ;
+
     private final RedisTemplate<String, Long> viewCountRedisTemplate;
     private final FortuneRepository fortuneRepository;
 
     @Scheduled(fixedRate = 5 * 60 * 1000)   // 5분마다 실행
     @Transactional
     public void syncViewCount() {
-        Set<String> keys = viewCountRedisTemplate.keys("view_count:*");
+        Set<String> keys = viewCountRedisTemplate.keys(REDIS_VIEW_COUNT_PATTERN);
         if (keys == null || keys.isEmpty()) {
             return;
         }
 
         for (String key : keys) {
-            Long fortuneId = Long.valueOf(key.replace("view_count:", ""));
+            Long fortuneId = Long.valueOf(key.replace(REDIS_VIEW_COUNT_TARGET, ""));
             Long count = viewCountRedisTemplate.opsForValue().get(key);
             // 조회수 증가
             fortuneRepository.findById(fortuneId).ifPresent(fortune -> fortune.addViewCount(count));

@@ -1,6 +1,6 @@
 package com.hodolee.example.api.fortune.dto;
 
 public record FortuneRequest(
-        String name,
-        String birthDate
+        String name,        // 이름
+        String birthDate    // 생년월일
 ) {}

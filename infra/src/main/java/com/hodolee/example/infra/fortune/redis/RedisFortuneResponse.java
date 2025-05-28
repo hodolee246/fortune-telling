@@ -1,7 +1,7 @@
 package com.hodolee.example.infra.fortune.redis;
 
 public record RedisFortuneResponse(
-        String name,
-        String birthDate,
-        String fortuneText
+        String name,        // 이름
+        String birthDate,   // 생년월일
+        String fortuneText  // 운세 크롤링 텍스트
 ) {}

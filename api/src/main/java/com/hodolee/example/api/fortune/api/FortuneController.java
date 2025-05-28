@@ -19,13 +19,13 @@ public class FortuneController {
     }
 
     @PostMapping
-    public ResponseEntity<?> getFortuneUrl(@RequestBody FortuneRequest request) {
+    public ResponseEntity<Object> getFortuneUrl(@RequestBody FortuneRequest request) {
         String fortuneUrl = fortuneService.getFortuneUrl(request.name(), request.birthDate());
         return ResponseEntity.created(URI.create(fortuneUrl)).build();
     }
 
     @GetMapping("{encryptIdx}")
-    public ResponseEntity<?> getFortune(@PathVariable("encryptIdx") String encryptIdx) {
+    public ResponseEntity<FortuneResponse> getFortune(@PathVariable("encryptIdx") String encryptIdx) {
         return ResponseEntity.ok(fortuneService.getFortune(encryptIdx));
     }
 
