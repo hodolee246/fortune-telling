@@ -1,4 +1,4 @@
-package com.hodolee.example.infra.fortune.redis;
+package com.hodolee.example.infra.fortune.cache;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

@@ -1,4 +1,4 @@
-package com.hodolee.example.infra.fortune.redis;
+package com.hodolee.example.infra.fortune.cache;
 
 public record RedisFortuneResponse(
         String name,        // 이름

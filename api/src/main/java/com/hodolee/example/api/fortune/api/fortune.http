@@ -9,3 +9,15 @@ Content-Type: application/json
 
 ### 운세 조회
 GET http://localhost:8080/api/fortune/3JNK3Nn
+
+### 운세 생성 요청2 (POST)
+POST http://localhost:8080/api/fortune
+Content-Type: application/json
+
+{
+  "name": "전인우",
+  "birthDate": "19990106"
+}
+
+### 운세 조회
+GET http://localhost:8080/api/fortune/ZGVWMER

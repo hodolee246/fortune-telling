@@ -4,13 +4,14 @@ import com.hodolee.example.core.fortune.service.dto.FortuneResponse;
 import com.hodolee.example.domain.fortune.domain.Fortune;
 import com.hodolee.example.domain.fortune.domain.FortuneRepository;
 import com.hodolee.example.infra.fortune.external.NaverFortuneClient;
-import com.hodolee.example.infra.fortune.redis.RedisFortuneResponse;
+import com.hodolee.example.infra.fortune.cache.RedisFortuneResponse;
 import com.hodolee.example.infra.fortune.url.UrlGenerator;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +107,12 @@ public class FortuneService {
         }
     }
 
+    @Cacheable(value = "fortuneResult", key = "#encryptIdx")
     public FortuneResponse getFortune(String encryptIdx) {
+        return getFortuneFromRedisOrRdb(encryptIdx);
+    }
+
+    public FortuneResponse getFortuneFromRedisOrRdb(String encryptIdx) {
         Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
         // redis 캐시
         String redisKey = "fortune:result:" + decodeIdx;
