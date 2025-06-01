@@ -25,12 +25,12 @@ public class NaverFortuneClient {
             Element fortuneElement = document.selectFirst("div.source_dsc");
 
             if (fortuneElement == null) {
-                throw new RuntimeException("크롤링한 정보를 찾을 수 없습니다.");
+                throw new IllegalStateException("크롤링한 정보를 찾을 수 없습니다.");
             }
 
             return fortuneElement.text();
         } catch (IOException e) {
-            throw new RuntimeException("네이버 운세 크롤링에 실패하였습니다.");
+            throw new IllegalStateException("네이버 운세 크롤링에 실패하였습니다.");
         }
     }
 
