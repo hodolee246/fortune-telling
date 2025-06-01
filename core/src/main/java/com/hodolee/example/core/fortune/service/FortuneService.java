@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class FortuneService {
     private final RedissonClient redissonClient;
     private final RedisTemplate<String, RedisFortuneResponse> redisTemplate;
     private final RedisTemplate<String, Long> viewCountRedisTemplate;
+    private final CacheManager cacheManager;
 
     @CircuitBreaker(name = "fortuneService", fallbackMethod = "getDefaultFortuneUrl")
     @Transactional
@@ -107,13 +110,29 @@ public class FortuneService {
         }
     }
 
-    @Cacheable(value = "fortuneResult", key = "#encryptIdx")
     public FortuneResponse getFortune(String encryptIdx) {
-        return getFortuneFromRedisOrRdb(encryptIdx);
+        Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
+        String viewCountKey = "view_count:" + decodeIdx;
+        viewCountRedisTemplate.opsForValue().increment(viewCountKey);
+
+        Cache caffeineCache = cacheManager.getCache("fortuneLocalCache");
+
+        if (caffeineCache == null) {
+            throw new IllegalStateException("caffeine 캐시를 찾을 수 없습니다.");
+        }
+
+        FortuneResponse cached = caffeineCache.get(encryptIdx, FortuneResponse.class);
+
+        if (cached != null) {
+            return cached;
+        }
+
+        FortuneResponse result = getFortuneFromRedisOrRdb(decodeIdx);
+        caffeineCache.put(encryptIdx, result);
+        return result;
     }
 
-    public FortuneResponse getFortuneFromRedisOrRdb(String encryptIdx) {
-        Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
+    public FortuneResponse getFortuneFromRedisOrRdb(Long decodeIdx) {
         // redis 캐시
         String redisKey = "fortune:result:" + decodeIdx;
         String viewCountKey = "view_count:" + decodeIdx;
