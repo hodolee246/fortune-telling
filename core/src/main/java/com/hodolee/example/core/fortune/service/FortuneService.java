@@ -3,17 +3,17 @@ package com.hodolee.example.core.fortune.service;
 import com.hodolee.example.core.fortune.service.dto.FortuneResponse;
 import com.hodolee.example.domain.fortune.domain.Fortune;
 import com.hodolee.example.domain.fortune.domain.FortuneRepository;
-import com.hodolee.example.infra.fortune.external.NaverFortuneClient;
 import com.hodolee.example.infra.fortune.cache.RedisFortuneResponse;
+import com.hodolee.example.infra.fortune.external.NaverFortuneClient;
 import com.hodolee.example.infra.fortune.url.UrlGenerator;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +34,9 @@ public class FortuneService {
     private final RedisTemplate<String, RedisFortuneResponse> redisTemplate;
     private final RedisTemplate<String, Long> viewCountRedisTemplate;
     private final CacheManager cacheManager;
+
+    @Value("${fortune.default-message}")
+    private String defaultFortuneMessage;
 
     @CircuitBreaker(name = "fortuneService", fallbackMethod = "getDefaultFortuneUrl")
     @Transactional
@@ -88,7 +91,7 @@ public class FortuneService {
                 throw new IllegalStateException("잠시 후 다시 시도해주세요.");
             }
 
-            String defaultFortune = "하늘을 조심하세요.";
+            String defaultFortune = defaultFortuneMessage;
 
             // url
             return saveFortuneAndReturnUrl(Fortune.builder()

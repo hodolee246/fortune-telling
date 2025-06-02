@@ -27,3 +27,6 @@ spring:
     redis:
       host: redis
       port: 6379
+
+fortune:
+  default-message: "오늘 하루 좋을예정"
