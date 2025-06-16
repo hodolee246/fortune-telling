@@ -5,6 +5,7 @@ import com.hodolee.example.domain.fortune.domain.Fortune;
 import com.hodolee.example.domain.fortune.domain.FortuneRepository;
 import com.hodolee.example.infra.fortune.cache.RedisFortuneResponse;
 import com.hodolee.example.infra.fortune.external.NaverFortuneClient;
+import com.hodolee.example.infra.fortune.kafka.FortuneViewProducer;
 import com.hodolee.example.infra.fortune.url.UrlGenerator;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class FortuneService {
     private final RedissonClient redissonClient;
     private final RedisTemplate<String, RedisFortuneResponse> redisTemplate;
     private final RedisTemplate<String, Long> viewCountRedisTemplate;
+    private final FortuneViewProducer fortuneViewProducer;
     private final CacheManager cacheManager;
 
     @Value("${fortune.default-message}")
@@ -115,8 +117,7 @@ public class FortuneService {
 
     public FortuneResponse getFortune(String encryptIdx) {
         Long decodeIdx = urlGenerator.getDecodedUrl(encryptIdx);
-        String viewCountKey = "view_count:" + decodeIdx;
-        viewCountRedisTemplate.opsForValue().increment(viewCountKey);
+        fortuneViewProducer.sendViewEvent(decodeIdx);
 
         Cache caffeineCache = cacheManager.getCache("fortuneLocalCache");
 
@@ -138,13 +139,10 @@ public class FortuneService {
     public FortuneResponse getFortuneFromRedisOrRdb(Long decodeIdx) {
         // redis 캐시
         String redisKey = "fortune:result:" + decodeIdx;
-        String viewCountKey = "view_count:" + decodeIdx;
         RedisFortuneResponse cached = redisTemplate.opsForValue().get(redisKey);
 
         // 캐시 존재 시 캐시 반환
         if (cached != null) {
-            // redis 조회 수 증가 (write-back)
-            viewCountRedisTemplate.opsForValue().increment(viewCountKey);
             return new FortuneResponse(cached.name(), cached.birthDate(), cached.fortuneText());
         }
 

@@ -32,4 +32,17 @@ fortune:
   default-message: "오늘 하루 좋을예정"
 
 redis:
-  address: "redis://localhost:6379"
+  address: redis://localhost:6379
+
+  kafka:
+    bootstrap-servers: localhost:9092
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  consumer:
+    group-id: fortune-view
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+kafka:
+  topic: fortune-view-topic
